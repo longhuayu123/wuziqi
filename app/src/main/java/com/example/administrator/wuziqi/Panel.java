@@ -24,10 +24,10 @@ public class Panel extends View {
     private float myLineHeight;         //行宽
     private int maxLine = 10;               //最大行数
 
-    private Paint myPaint;              //画笔
-    private Bitmap myWhitePice;             //白棋子
-    private Bitmap myBlackPice;             //黑棋子
-    private float ratioPieceOfLineHight = 3 * 1.0f / 4;             //棋子为行宽的3/4
+    private Paint myPaint = new Paint();              //画笔
+    private Bitmap myWhitePiece;             //白棋子
+    private Bitmap myBlackPiece;             //黑棋子
+    private float ratioPieceOfLineHeight = 3 * 1.0f / 4;             //棋子为行宽的3/4
 
     private boolean isGameOver;                      //游戏结束
     public static int WHITE_WIN = 0;                //胜利为白
@@ -38,7 +38,7 @@ public class Panel extends View {
     private List<Point> myBlackArray = new ArrayList<Point>();         //黑棋子位置信息
 
     private onGameListener onGameListener;       //回调借口
-    private int mUnder;                           //dialog的Y坐标？？
+    private int mUnder;                            //dialog的Y坐标？？
 
     public Panel(Context context) {
         this(context, null);
@@ -68,8 +68,8 @@ public class Panel extends View {
         myPaint.setDither(true);                //是指画笔是否防抖动
         myPaint.setStyle(Paint.Style.STROKE);               //设置画笔样式，这里使用描边
 
-        myWhitePice = BitmapFactory.decodeResource(getResources(), R.drawable.stone_w2);
-        myBlackPice = BitmapFactory.decodeResource(getResources(), R.drawable.stone_b1);
+        myWhitePiece = BitmapFactory.decodeResource(getResources(), R.drawable.stone_w2);
+        myBlackPiece = BitmapFactory.decodeResource(getResources(), R.drawable.stone_b1);
     }
 
 
@@ -80,7 +80,7 @@ public class Panel extends View {
             return false;
         }
         int action = event.getAction();
-        if (action == MotionEvent.ACTION_POINTER_UP)        //判断触摸动作，ACTION_UP为单点触摸离开
+        if (action == MotionEvent.ACTION_DOWN)        //判断触摸动作，ACTION_UP为单点触摸离开
         {
             int x = (int) event.getX();
             int y = (int) event.getY();
@@ -133,9 +133,9 @@ public class Panel extends View {
         myLineHeight = myPanelWidth * 1.0f / maxLine;
         mUnder = h - (h - myPanelWidth) / 2;
 
-        int pieceWidth = (int) (myLineHeight * ratioPieceOfLineHight);      //棋子大小占行宽的3/4
-        myWhitePice = Bitmap.createScaledBitmap(myWhitePice, pieceWidth, pieceWidth, false);
-        myBlackPice = Bitmap.createScaledBitmap(myBlackPice, pieceWidth, pieceWidth, false);
+        int pieceWidth = (int) (myLineHeight * ratioPieceOfLineHeight);      //棋子大小占行宽的3/4
+        myWhitePiece = Bitmap.createScaledBitmap(myWhitePiece, pieceWidth, pieceWidth, false);
+        myBlackPiece = Bitmap.createScaledBitmap(myBlackPiece, pieceWidth, pieceWidth, false);
     }
 
     protected void onDraw(Canvas canvas) {           //Canvas类相当于一块画布
@@ -151,7 +151,7 @@ public class Panel extends View {
         int startX = (int) (lineHeight / 2);        //棋盘线起始X坐标
         int endX = (int) (w - lineHeight / 2);
         for (int i = 0; i < maxLine; i++) {
-            int y = (int) ((i + 1.5) * lineHeight);
+            int y = (int) ((i + 0.5) * lineHeight);
 
             canvas.drawLine(startX, y, endX, y, myPaint);        //画棋盘横向线
             canvas.drawLine(y, startX, y, endX, myPaint);        //画棋盘纵向线
@@ -163,13 +163,13 @@ public class Panel extends View {
         int n2 = myBlackArray.size();
         for (int i = 0; i < n1; i++) {
             Point whitePoint = myWhiteArray.get(i);
-            canvas.drawBitmap(myWhitePice, (whitePoint.x + (1 - ratioPieceOfLineHight) / 2) * myLineHeight,
-                    (whitePoint.y + (1 - ratioPieceOfLineHight) / 2) * myLineHeight, null);
+            canvas.drawBitmap(myWhitePiece, (whitePoint.x + (1 - ratioPieceOfLineHeight) / 2) * myLineHeight,
+                    (whitePoint.y + (1 - ratioPieceOfLineHeight) / 2) * myLineHeight, null);
             //drawBitmap(Bitmap bitmap, float left, float top, Paint paint);Bitmap：图片对象，left:偏移左边的位置，top： 偏移顶部的位置
         }
         for (int i = 0; i < n2; i++) {
             Point blackPoint = myBlackArray.get(i);
-            canvas.drawBitmap(myBlackPice, (blackPoint.x + (1 - ratioPieceOfLineHight) / 2) * myLineHeight, (blackPoint.y + (1 - ratioPieceOfLineHight) / 2) * myLineHeight, null);
+            canvas.drawBitmap(myBlackPiece, (blackPoint.x + (1 - ratioPieceOfLineHeight) / 2) * myLineHeight, (blackPoint.y + (1 - ratioPieceOfLineHeight) / 2) * myLineHeight, null);
         }
 
     }
@@ -319,7 +319,6 @@ public class Panel extends View {
         }
         return false;
     }
-
 
 
     //重新开始游戏
